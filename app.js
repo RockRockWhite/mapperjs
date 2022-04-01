@@ -1,37 +1,34 @@
-const mapper = require("./mapper")
+
 
 class A {
     constructor() {
-        this.data = 0
-        this.b = 1
-        this.c = 2
-        this.d = 3
-        this.e = 4
-        this.f = 5
-        this.str = "hello"
+        this.firstName = "Rock";
+        this.lastName = "White";
     }
-
 }
+
 class B {
     constructor() {
-        this.data = 0
-        this.b = 233
-        this.c = 0
-        this.d = 0
-        this.g = 0
+        this.fullName = "";
     }
 }
+var a_var = new A();
+var b_var = new B();
+
+const mapper = require("./mapper")
 
 var factory = new mapper.MapperFactory()
+// factory.registMapper("a-b-mapper",
+//     new mapper.Mapper()
+//         .setIgnore("b")
+//         .setIgnore("c")
+//         .setIgnore("d")) // 注册a-b-mapper, 使用链式编程写法配置忽略b c d字段映射
+
 factory.registMapper("a-b-mapper", new mapper.Mapper()
-    .setMapping("data", ["data"], (data) => { return data + 2 })
-    .setIgnore("b"))
-
+    .setIgnore("fullName")
+    .setMapping("fullName", ["firstName", "lastName"], (firstName, lastName) => { return firstName + " " + lastName }));
 console.log("value, key")
-var a = new A()
-a.data = 233
 
-var b = new B()
 
-factory.getMapper("a-b-mapper").map(a, b)
-console.log(b)
+factory.getMapper("a-b-mapper").map(a_var, b_var);
+console.log(b_var)
