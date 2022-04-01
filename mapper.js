@@ -1,25 +1,3 @@
-class A {
-    constructor() {
-        this.data = 0
-        this.b = 1
-        this.c = 2
-        this.d = 3
-        this.e = 4
-        this.f = 5
-        this.str = "hello"
-    }
-
-}
-class B {
-    constructor() {
-        this.data = 0
-        this.b = 233
-        this.c = 0
-        this.d = 0
-        this.g = 0
-    }
-}
-
 class Mapping {
     constructor() {
         this.src;
@@ -39,6 +17,7 @@ class Mapper {
         mapping.opt = opt;
 
         this.mapping_table.set(dist, mapping);
+        return this
     }
 
     getMapping(dist) {
@@ -53,10 +32,12 @@ class Mapper {
             throw new Error(`mapper has no mapping to ${dist}`)
         }
         this.mapping_table.delete(dist)
+        return this
     }
 
     setIgnore(dist) {
         this.ignore_table.push(dist);
+        return this
     }
 
     getIgnores() {
@@ -69,6 +50,7 @@ class Mapper {
             throw new Error(`mapper has no ignore to ${dist}`)
         }
         this.ignore_table.splice(this.ignore_table.indexOf(dist), 1);
+        return this
     }
 
     map(src, dist) {
@@ -130,17 +112,22 @@ class Mapper {
     }
 }
 
-console.log("value, key")
-var a = new A()
-a.data = 233
+class MapperFactory {
+    constructor() {
+        this.mappers = new Map();
+    }
 
-var b = new B()
-var mapper = new Mapper()
-mapper.setMapping("data", ["data"], (data) => {
-    return data + 1
-})
-mapper.setIgnore("b")
+    registMapper(name, mapper) {
+        this.mappers.set(name, mapper)
+    }
 
-mapper.delIgnore("b")
-mapper.map(a, b)
-console.log(b)
+    getMapper(name) {
+        if (!this.mappers.has(name)) {
+            throw new Error(`mapper ${name} had not be registed.`)
+        }
+        return this.mappers.get(name)
+    }
+}
+
+module.exports.Mapper = Mapper;
+module.exports.MapperFactory = MapperFactory;
